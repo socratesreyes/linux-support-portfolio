@@ -32,9 +32,16 @@ When a ticket lands, do this before touching anything:
 2. **Determine scope.** Identify if the failure is isolated to a single client or widespread across multiple connections.
 	- **Single Client:** - Focus on account permissions, localized IPs, and specific directory paths (`namei -l`).
 	- **Multi-Client:** Immediately declare a **Major Incident**, notify stakeholders, and shift focus from user settings to global platform infrastructure (e.g., checking global daemon health, interface bindings, or storage limits). Prepare infrastructure logs before engaging L3.
+    - CRITICAL SEVERITY HIGH IMPACT SERVICE.(special cases ) - AUTOMATIC escalation- if a core infastructure service is confirmed down entirely dropping a site. or   global `sshd` binding failure, total AS2 transport listener collapse) - escalate to l3/devops following specific KB instruction. 
+-2. **Determine scope.** Identify if the failure is isolated to a single client or widespread across multiple connections.
+	- **Single Client:** - Focus on account permissions, localized IPs, and specific directory paths (`namei -l`).
+	- **Multi-Client:** Immediately declare a **Major Incident**, notify stakeholders, and shift focus from user settings to global platform infrastructure (e.g., checking global daemon health, interface bindings, or storage limits). Prepare infrastructure logs before engaging L3.
+    - CRITICAL SEVERITY HIGH IMPACT SERVICE.(special cases ) - AUTOMATIC escalation- if a core infastructure service is confirmed down entirely dropping a site. or   global `sshd` binding failure, total AS2 transport listener collapse) - escalate to l3/devops following specific KB instruction. 
 
-3. **Confirm what changed.** Recent deploy, patch, cert renewal, firewall
-   rule, DNS change. Ask the client if they changed anything on their side.
+3. **Audit the Change Window** Recent deploy, patch, cert renewal, firewall
+   rule, DNS change. 
+	- **INTERNAL OPERATIONS** -audit intern **CHANGE REQUESTS** registry, maintenance calendars, and operational broadcast emails.  (recent deployments, network routing changes, firewall modifications or TLS certificate renewals.)
+	-  EXTERNAL B2B Clients(black box) - in this business setup we dont have internal access to internal ticketing systems or infrastructure changes. engage client technical contact to confirm if they have changes. 
 4. **Check the service state.** `systemctl status <svc>` first, always.
 5. **Look at the log window.** Last 15 minutes around the reported time,
    not "last 24 hours of noise."
@@ -52,7 +59,7 @@ The four questions that shape everything after:
 
 ## Escalation rules
 
-Escalate to L2+/platform owner when:
+Escalate to L3+/platform owner when:
 
 - A production service stays down after one approved restart
 - Disk is full and cleanup is not obviously safe
@@ -79,7 +86,7 @@ For every ticket, collect:
 - **What you tried** and the result, in order
 - **Client-facing summary** in plain language
 
-Paste this into the ticket notes. It becomes the handoff if you escalate
+Paste this into the ticket notes. It becomes the hand off if you escalate
 and the audit trail if the client asks later.
 
 ---
@@ -392,16 +399,16 @@ chronyc tracking 2>/dev/null
 
 Fast lookup for the tickets in this dataset.
 
-| Ticket | First command | Second command | Third command |
-|---|---|---|---|
-| SFTP login failing | `systemctl status sshd` | `journalctl -u sshd` | `ss -tulpn \| grep ':22'` |
-| Portal slow on reports | `uptime` | `top -b -n1` | `vmstat 1 5` |
-| Files stuck in queue | `systemctl status <transport>` | `journalctl -u <transport>` | `df -h` |
-| AS2 receipts missing | `journalctl -u <transport>` | `df -h` | `journalctl -p err -b` |
-| Cannot reach SFTP port 22 | `ss -tulpn \| grep ':22'` | `firewall-cmd --list-all` | `nc -vz <host> 22` |
-| VPN tunnel drops | `ping`/`traceroute` from client | `nc -vz <host> <port>` | escalate to network owner |
-| Password reset loop | `id <user>` | `sudo -l -U <user>` | `ausearch -m avc -ts recent` |
-| Request: CSV export | not a triage ticket | route to enhancement | document as feature request |
+| Ticket                    | First command                   | Second command              | Third command                |
+| ------------------------- | ------------------------------- | --------------------------- | ---------------------------- |
+| SFTP login failing        | `systemctl status sshd`         | `journalctl -u sshd`        | `ss -tulpn \| grep ':22'`    |
+| Portal slow on reports    | `uptime`                        | `top -b -n1`                | `vmstat 1 5`                 |
+| Files stuck in queue      | `systemctl status <transport>`  | `journalctl -u <transport>` | `df -h`                      |
+| AS2 receipts missing      | `journalctl -u <transport>`     | `df -h`                     | `journalctl -p err -b`       |
+| Cannot reach SFTP port 22 | `ss -tulpn \| grep ':22'`       | `firewall-cmd --list-all`   | `nc -vz <host> 22`           |
+| VPN tunnel drops          | `ping`/`traceroute` from client | `nc -vz <host> <port>`      | escalate to network owner    |
+| Password reset loop       | `id <user>`                     | `sudo -l -U <user>`         | `ausearch -m avc -ts recent` |
+| Request: CSV export       | not a triage ticket             | route to enhancement        | document as feature request  |
 
 ---
 
