@@ -29,3 +29,7 @@ SELECT
 
 
 ![](linux-support-portfolio/08-evidence/screenshots/Screenshot_2026-10-27_19-07-02.png)
+
+
+
+![](../08-evidence/screenshots/Screenshot_2026-10-27_19-07-02%202.png)
