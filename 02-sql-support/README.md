@@ -28,3 +28,4 @@ The database schema populates standard operational tables (`clients`=5, `users`=
 ![](linux-support-portfolio/08-evidence/screenshots/Screenshot_2026-10-28_09-52-24.png)
 
 
+![](../08-evidence/screenshots/Screenshot_2026-10-27_19-07-02%203.png)
